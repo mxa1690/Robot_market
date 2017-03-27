@@ -170,6 +170,10 @@ void Controller::execute_cmd(int cmd)
             }
             shop.create_new_robot_part(robo_name, model_no, cost, desc, max_power, compartment, max_arms, energy, power_available, choice);
     }
+    else if (cmd==2)
+        cout<<"Thank you and have a great day!!\n";
+    else
+        cout<<"Invalid!!\n";
        // "WILL CONTINUE HERE LATER"
 }
 
