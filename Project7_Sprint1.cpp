@@ -72,10 +72,37 @@ void Shop::create_new_robot_part(string robo_name,int model_no,double price, str
     else if (choice ==5)
         Arm arm(robo_name,model_no,price,description, max_power);
 }
+class View
+{
+public:
+    View(Shop& sp):shop(sp){}
+    string menu();
+private:
+    Shop& shop;
+};
+string View::menu()
+{
+    string menu = "\n--Menu--\n1. Create a new robot part\n2. Exit\n";
+    return menu;
+}
+
+class Controller
+{
+public:
+    Controller (Shop& sp, View& view):shop (sp), view (view) {}
+    void cli();
+    void execute_cmd(int cmd);
+private:
+    Shop& shop;
+    View& view;
+};
+
 
 int main()
 {
     Shop sp;
-	return 0;
+    View view(sp);
+    Controller controller (sp,view);
+    return 0;
 }
 
