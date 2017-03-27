@@ -96,6 +96,17 @@ private:
     Shop& shop;
     View& view;
 };
+void Controller::cli()
+{
+    int cmd=-1;
+    while(cmd!=2){
+    cout<<view.menu();
+    cout<<"Command? ";
+    cin>>cmd;
+    cin.ignore();
+    //execute_cmd(cmd);
+    }
+}
 
 
 int main()
@@ -103,6 +114,7 @@ int main()
     Shop sp;
     View view(sp);
     Controller controller (sp,view);
+    controller.cli();
     return 0;
 }
 
