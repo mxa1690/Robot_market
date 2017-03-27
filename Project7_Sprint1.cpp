@@ -104,9 +104,75 @@ void Controller::cli()
     cout<<"Command? ";
     cin>>cmd;
     cin.ignore();
-    //execute_cmd(cmd);
+    execute_cmd(cmd);
     }
 }
+
+void Controller::execute_cmd(int cmd)
+{
+    string robo_name, desc;
+    int model_no, choice, compartment=0, max_arms=2;
+    double cost, energy=0, max_power, power_available;
+    if (cmd==1)
+    {
+
+            bool ans_part;
+            do{
+                cout<<"Which part?\n1. Head\n2. Locomotor\n3. Torso\n4. Battery\n5. Arm\n";
+                ans_part=true;
+                cin>>choice;
+                if ((choice<1)||(choice>5))
+                    {
+                        cout<<"Error:Options are from 1 to 5!\n";
+                        ans_part = false;
+                    }
+            } while (ans_part!=true);
+
+            cout<<"Enter the part name - ";
+            cin.ignore();
+            getline(std::cin,robo_name);
+            cout<<"Enter the model number - ";
+            cin>>model_no;
+            cout<<"Enter the cost - ";
+            cin>>cost;
+            cin.ignore();
+            cout<<"Enter the description - ";
+            cin.ignore();
+            getline(std::cin,desc);
+            if ((choice==2)||(choice==5)||(choice==1))
+            {
+                cout<<"Maximum power - ";
+                cin>>max_power;
+            }
+            else if (choice==3)
+            {
+                bool ans_compartment;
+                do{
+                    ans_compartment=true;
+                        cout<<"Enter the number of battery compartments (between 1 and 3) - ";
+                        cin>>compartment;
+                    if ((compartment<1)||(compartment>3))
+                    {
+                        cout<<"Error:Compartments should be between 1 and 3\n";
+                        ans_compartment = false;
+                    }
+
+                }while(ans_compartment!=true);
+              cout<<"Enter the max arms - ";
+              cin>>max_arms;
+            }
+            else if (choice==4)
+            {
+                cout<<"Energy the battery contains (in kW h) - ";
+                cin>>energy;
+                cout<<"Power available";
+                cin>>power_available;
+            }
+            shop.create_new_robot_part(robo_name, model_no, cost, desc, max_power, compartment, max_arms, energy, power_available, choice);
+    }
+       // "WILL CONTINUE HERE LATER"
+}
+
 
 
 int main()
