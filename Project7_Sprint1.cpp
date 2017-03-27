@@ -1,3 +1,6 @@
+//Mohammed Ali
+//1001241690
+
 #include <iostream>
 #include <string>
 #include <stdlib.h>
