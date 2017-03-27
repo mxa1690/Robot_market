@@ -53,3 +53,29 @@ public:
     double MaxPower;
 };
 
+class Shop
+{
+public:
+    void create_new_robot_part(string robo_name,int model_no,double price,string description, double max_power,int compartment,int max_arms,double energy,double power_available,int choice);
+    void create_new_robot_model();
+};
+void Shop::create_new_robot_part(string robo_name,int model_no,double price, string description, double max_power, int compartment, int max_arms, double energy, double power_available, int choice)
+{
+    if (choice ==1)
+        Head head(robo_name,model_no,price,description,max_power);
+    else if (choice ==2)
+        Locomotor locomotor(robo_name,model_no,price,description,max_power);
+    else if (choice ==3)
+        Torso torso(robo_name,model_no,price,description,compartment,max_arms);
+    else if (choice ==4)
+        Battery battery(robo_name,model_no,price,description, power_available, energy);
+    else if (choice ==5)
+        Arm arm(robo_name,model_no,price,description, max_power);
+}
+
+int main()
+{
+    Shop sp;
+	return 0;
+}
+
