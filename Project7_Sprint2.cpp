@@ -37,7 +37,6 @@ class Robot_models
     Robot_part *battery;
 public:
     Robot_models (string Name, int modelN, Robot_part *Hd, Robot_part *T, Robot_part *l, Robot_part *a, Robot_part *bat):name(Name),model_number(modelN), head(Hd), torso(T), locomotor(l), arm(a), battery(bat){}
-    //Robot_models (string Name, int modelN, Robot_part Hd):name (Name),model_number (modelN), head(Hd){}
     friend void print_models(Robot_models model, int i);
     double cost();
     double max_speed();
@@ -46,11 +45,6 @@ public:
 void print_models(Robot_models model, int i)
 {
     cout<<"\n->Name: "<<model.name<<"\tModel number: "<<model.model_number<<"\tContains the following parts: ";
-    if((model.head)==0)
-    {
-        //cout<<"Hello";
-        //cout<<(model.head)->type;
-    }
 }
 
 class Head:public Robot_part
@@ -110,20 +104,15 @@ void Shop::create_new_robot_part(string robo_name,int model_no,double price, str
         store_head.push_back(new Head{robo_name,model_no,price,description,max_power,"Head"});
     else if (choice ==2)
         store_locomotor.push_back(new Locomotor{robo_name,model_no,price,description,max_power,"Locomotor"});
-        //Locomotor locomotor(robo_name,model_no,price,description,max_power);
     else if (choice ==3)
         store_torso.push_back(new Torso{robo_name,model_no,price,description,compartment,max_arms,"Torso"});
-        //Torso torso(robo_name,model_no,price,description,compartment,max_arms);
     else if (choice ==4)
         store_battery.push_back(new Battery{robo_name,model_no,price,description, power_available, energy, "Battery"});
-        //Battery battery(robo_name,model_no,price,description, power_available, energy);
     else if (choice ==5)
         store_arm.push_back(new Arm{robo_name,model_no,price,description, max_power,"Arm"});
-        //Arm arm(robo_name,model_no,price,description, max_power);
 }
 void Shop::create_new_robot_model(string model_name,int number,Robot_part *head, Robot_part *locomotor, Robot_part *torso, Robot_part *battery, Robot_part *arm)
 {
-    //Robot_models model(model_name);
     store.push_back(new Robot_models{model_name, number, head, torso, locomotor, arm, battery});
 }
 
@@ -228,7 +217,6 @@ void Controller::execute_cmd(int cmd)
     else if (cmd==2)
     {
         cout<<"Enter the model name: ";
-        //cin.ignore();
         getline(cin,model_name);
         cout<<"Enter model number: ";
         cin>>model_number;
@@ -303,8 +291,6 @@ void Controller::execute_cmd(int cmd)
             Robot_part *b =(shop.store_battery[battery_select-1]);
         if (!shop.store_arm.empty())
             Robot_part *a =(shop.store_arm[arm_select-1]);
-        //if ((!shop.store_head.empty())&&(!shop.store_locomotor.empty())&&(!shop.store_torso.empty())&&(!shop.store_battery.empty())&&(!shop.store_arm.empty()))
-        //shop.create_new_robot_model(model_name,model_number,*(shop.store_head[head_select-1]),*(shop.store_locomotor[locomotor_select-1]),*(shop.store_torso[torso_select-1]),*(shop.store_battery[battery_select-1]), *(shop.store_arm[arm_select-1]));
         shop.create_new_robot_model(model_name,model_number,h,l,t,b,a);
     }
     else if (cmd==3)
