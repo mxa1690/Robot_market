@@ -215,6 +215,66 @@ void Controller::execute_cmd(int cmd)
         getline(cin,model_name);
         cout<<"Enter model number: ";
         cin>>model_number;
+         if (!shop.store_head.empty())
+        {
+           cout<<"\nAvailable robot heads are: ";
+            for ( auto & val: shop.store_head)
+            {
+                int i=1;
+                print_parts(*val,i);
+                i++;
+            }
+            cout<<"Option?";
+            cin>>head_select;
+        }
+        if (!shop.store_locomotor.empty())
+        {
+            cout<<"\nAvailable robot locomotors are: ";
+            for ( auto & val: shop.store_locomotor)
+            {
+                 int i=1;
+                print_parts(*val,i);
+                i++;
+            }
+            cout<<"Option?";
+            cin>>locomotor_select;
+        }
+        if (!shop.store_torso.empty())
+        {
+            cout<<"\nAvailable robot torsos are: ";
+            for ( auto & val: shop.store_torso)
+            {
+                 int i=1;
+                print_parts(*val,i);
+                ++i;
+            }
+            cout<<"Option?";
+            cin>>torso_select;
+        }
+        if (!shop.store_battery.empty())
+        {
+            cout<<"\nAvailable robot batteries are: ";
+            for ( auto & val: shop.store_battery)
+            {
+                 int i=1;
+                print_parts(*val,i);
+                i++;
+            }
+            cout<<"Option?";
+            cin>>battery_select;
+        }
+        if (!shop.store_arm.empty())
+        {
+            cout<<"\nAvailable robot arms are: ";
+            for ( auto & val: shop.store_arm)
+            {
+                 int i=1;
+                print_parts(*val,i);
+                i++;
+            }
+            cout<<"Option?";
+            cin>>arm_select;
+        }
     else if (cmd==3)
 	{
 
