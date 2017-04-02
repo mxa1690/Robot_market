@@ -1,24 +1,23 @@
-//Mohammed Ali 
-//1001241690
-
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+#include <vector>
 
 using namespace std;
 
 class Robot_part
 {
 public:
-    Robot_part(string robot_name,int robot_modelno, double price, string desc):name(robot_name),model_number(robot_modelno),cost(price),description(desc){}
+    Robot_part(){};
+    Robot_part(string robot_name,int robot_modelno, double price, string desc, string what_part):name(robot_name),model_number(robot_modelno),cost(price),description(desc), type(what_part){}
     friend void print_parts (Robot_part, int i);
-
+    string type;
 protected:
+
     string name;
     int model_number;
     double cost;
     string description;
-    string image_filename;
 };
 void print_parts(Robot_part robot, int i)
 {
@@ -44,24 +43,34 @@ public:
     double max_speed();
     double max_battery_life();
 };
+void print_models(Robot_models model, int i)
+{
+    cout<<"\n->Name: "<<model.name<<"\tModel number: "<<model.model_number<<"\tContains the following parts: ";
+    if((model.head)==0)
+    {
+        //cout<<"Hello";
+        //cout<<(model.head)->type;
+    }
+}
+
 class Head:public Robot_part
 {
 public:
-    Head (string robot_name,int robot_modelno, double price, string desc,double power_req):Robot_part(robot_name,robot_modelno,price,desc) {power = power_req;}
+    Head (string robot_name,int robot_modelno, double price, string desc,double power_req, string type):Robot_part(robot_name,robot_modelno,price,desc,"Head") {power = power_req;}
     double power;
 };
 
 class Locomotor:public Robot_part
 {
 public:
-    Locomotor (string robot_name,int robot_modelno, double price, string desc, double power_req) :Robot_part(robot_name,robot_modelno,price,desc) {max_power = power_req;}
+    Locomotor (string robot_name,int robot_modelno, double price, string desc, double power_req, string type) :Robot_part(robot_name,robot_modelno,price,desc, "Locomotor") {max_power = power_req;}
     double max_power;
 };
 
 class Torso:public Robot_part
 {
 public:
-    Torso (string robot_name,int robot_modelno, double price, string desc, int compartments, int max_arms): Robot_part(robot_name,robot_modelno,price,desc) {battery_compartments = compartments ; MaxArms = max_arms;}
+    Torso (string robot_name,int robot_modelno, double price, string desc, int compartments, int max_arms, string type): Robot_part(robot_name,robot_modelno,price,desc,"Torso") {battery_compartments = compartments ; MaxArms = max_arms;}
     int battery_compartments;
     int MaxArms;
 };
@@ -69,7 +78,7 @@ public:
 class Battery:public Robot_part
 {
 public:
-    Battery (string robot_name,int robot_modelno, double price, string desc, double power_available, double energy):Robot_part(robot_name,robot_modelno,price,desc) {PowerAvailable = power_available ; max_energy = energy;}
+    Battery (string robot_name,int robot_modelno, double price, string desc, double power_available, double energy, string type):Robot_part(robot_name,robot_modelno,price,desc, "Battery") {PowerAvailable = power_available ; max_energy = energy;}
     double PowerAvailable;
     double max_energy;
 };
@@ -77,9 +86,10 @@ public:
 class Arm:public Robot_part
 {
 public:
-    Arm (string robot_name,int robot_modelno, double price, string desc, double max_power):Robot_part(robot_name,robot_modelno,price,desc) {MaxPower = max_power;}
+    Arm (string robot_name,int robot_modelno, double price, string desc, double max_power, string type):Robot_part(robot_name,robot_modelno,price,desc, "Arm") {MaxPower = max_power;}
     double MaxPower;
 };
+
 
 class Shop
 {
@@ -91,10 +101,11 @@ public:
     vector <Robot_part*> store_battery;
     vector <Robot_part*> store_arm;
     void create_new_robot_part(string robo_name,int model_no,double price,string description, double max_power,int compartment,int max_arms,double energy,double power_available,int choice);
-    void create_new_robot_model();
+    void create_new_robot_model(string model_name,int model_number,Robot_part *head, Robot_part *locomotor, Robot_part *torso, Robot_part *battery, Robot_part *arm);
 };
 void Shop::create_new_robot_part(string robo_name,int model_no,double price, string description, double max_power, int compartment, int max_arms, double energy, double power_available, int choice)
 {
+
     if (choice ==1)
         store_head.push_back(new Head{robo_name,model_no,price,description,max_power,"Head"});
     else if (choice ==2)
@@ -110,6 +121,12 @@ void Shop::create_new_robot_part(string robo_name,int model_no,double price, str
         store_arm.push_back(new Arm{robo_name,model_no,price,description, max_power,"Arm"});
         //Arm arm(robo_name,model_no,price,description, max_power);
 }
+void Shop::create_new_robot_model(string model_name,int number,Robot_part *head, Robot_part *locomotor, Robot_part *torso, Robot_part *battery, Robot_part *arm)
+{
+    //Robot_models model(model_name);
+    store.push_back(new Robot_models{model_name, number, head, torso, locomotor, arm, battery});
+}
+
 class View
 {
 public:
@@ -134,6 +151,7 @@ private:
     Shop& shop;
     View& view;
 };
+
 void Controller::cli()
 {
     int cmd=-1;
@@ -145,7 +163,6 @@ void Controller::cli()
     execute_cmd(cmd);
     }
 }
-
 void Controller::execute_cmd(int cmd)
 {
     string robo_name, desc, model_name;
@@ -215,7 +232,7 @@ void Controller::execute_cmd(int cmd)
         getline(cin,model_name);
         cout<<"Enter model number: ";
         cin>>model_number;
-         if (!shop.store_head.empty())
+        if (!shop.store_head.empty())
         {
            cout<<"\nAvailable robot heads are: ";
             for ( auto & val: shop.store_head)
@@ -275,18 +292,37 @@ void Controller::execute_cmd(int cmd)
             cout<<"Option?";
             cin>>arm_select;
         }
+        Robot_part *h=0, *l=0,*t=0, *b=0, *a=0;
+        if (!shop.store_head.empty())
+            Robot_part *h =(shop.store_head[head_select-1]);
+        if (!shop.store_locomotor.empty())
+            Robot_part *l =(shop.store_locomotor[locomotor_select-1]);
+        if (!shop.store_torso.empty())
+            Robot_part *t =(shop.store_torso[torso_select-1]);
+        if (!shop.store_battery.empty())
+            Robot_part *b =(shop.store_battery[battery_select-1]);
+        if (!shop.store_arm.empty())
+            Robot_part *a =(shop.store_arm[arm_select-1]);
+        //if ((!shop.store_head.empty())&&(!shop.store_locomotor.empty())&&(!shop.store_torso.empty())&&(!shop.store_battery.empty())&&(!shop.store_arm.empty()))
+        //shop.create_new_robot_model(model_name,model_number,*(shop.store_head[head_select-1]),*(shop.store_locomotor[locomotor_select-1]),*(shop.store_torso[torso_select-1]),*(shop.store_battery[battery_select-1]), *(shop.store_arm[arm_select-1]));
+        shop.create_new_robot_model(model_name,model_number,h,l,t,b,a);
+    }
     else if (cmd==3)
-	{
-
-	}
+    {
+        cout<<"Available robot models are\n";
+        for ( auto & val: shop.store)
+        {
+            int i=1;
+            print_models(*val,i);
+            i++;
+        }
+    }
     else if (cmd==4)
         cout<<"Thank you and have a great day!!\n";
     else
         cout<<"Invalid!!\n";
        // "WILL CONTINUE HERE LATER"
 }
-
-
 
 int main()
 {
@@ -296,4 +332,3 @@ int main()
     controller.cli();
     return 0;
 }
-
