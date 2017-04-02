@@ -11,6 +11,7 @@ class Robot_part
 {
 public:
     Robot_part(string robot_name,int robot_modelno, double price, string desc):name(robot_name),model_number(robot_modelno),cost(price),description(desc){}
+    friend void print_parts (Robot_part, int i);
 
 protected:
     string name;
@@ -19,6 +20,13 @@ protected:
     string description;
     string image_filename;
 };
+void print_parts(Robot_part robot, int i)
+{
+    cout<<"\n"<<i<<". "<<robot.name<<"\t";
+    cout<<robot.model_number<<"\t";
+    cout<<robot.description<<"\t";
+    cout<<robot.cost<<"\n";
+}
 class Robot_models
 {
     string name;
@@ -76,21 +84,31 @@ public:
 class Shop
 {
 public:
+    vector <Robot_models*> store;
+    vector <Robot_part*> store_head;
+    vector <Robot_part*> store_locomotor;
+    vector <Robot_part*> store_torso;
+    vector <Robot_part*> store_battery;
+    vector <Robot_part*> store_arm;
     void create_new_robot_part(string robo_name,int model_no,double price,string description, double max_power,int compartment,int max_arms,double energy,double power_available,int choice);
     void create_new_robot_model();
 };
 void Shop::create_new_robot_part(string robo_name,int model_no,double price, string description, double max_power, int compartment, int max_arms, double energy, double power_available, int choice)
 {
     if (choice ==1)
-        Head head(robo_name,model_no,price,description,max_power);
+        store_head.push_back(new Head{robo_name,model_no,price,description,max_power,"Head"});
     else if (choice ==2)
-        Locomotor locomotor(robo_name,model_no,price,description,max_power);
+        store_locomotor.push_back(new Locomotor{robo_name,model_no,price,description,max_power,"Locomotor"});
+        //Locomotor locomotor(robo_name,model_no,price,description,max_power);
     else if (choice ==3)
-        Torso torso(robo_name,model_no,price,description,compartment,max_arms);
+        store_torso.push_back(new Torso{robo_name,model_no,price,description,compartment,max_arms,"Torso"});
+        //Torso torso(robo_name,model_no,price,description,compartment,max_arms);
     else if (choice ==4)
-        Battery battery(robo_name,model_no,price,description, power_available, energy);
+        store_battery.push_back(new Battery{robo_name,model_no,price,description, power_available, energy, "Battery"});
+        //Battery battery(robo_name,model_no,price,description, power_available, energy);
     else if (choice ==5)
-        Arm arm(robo_name,model_no,price,description, max_power);
+        store_arm.push_back(new Arm{robo_name,model_no,price,description, max_power,"Arm"});
+        //Arm arm(robo_name,model_no,price,description, max_power);
 }
 class View
 {
@@ -130,8 +148,8 @@ void Controller::cli()
 
 void Controller::execute_cmd(int cmd)
 {
-    string robo_name, desc;
-    int model_no, choice, compartment=0, max_arms=2;
+    string robo_name, desc, model_name;
+    int model_no, choice, compartment=0, max_arms=2, model_number, head_select, torso_select, locomotor_select, battery_select, arm_select;
     double cost, energy=0, max_power, power_available;
     if (cmd==1)
     {
@@ -191,9 +209,12 @@ void Controller::execute_cmd(int cmd)
             shop.create_new_robot_part(robo_name, model_no, cost, desc, max_power, compartment, max_arms, energy, power_available, choice);
     }
     else if (cmd==2)
-	{
-
-	}
+    {
+        cout<<"Enter the model name: ";
+        //cin.ignore();
+        getline(cin,model_name);
+        cout<<"Enter model number: ";
+        cin>>model_number;
     else if (cmd==3)
 	{
 
