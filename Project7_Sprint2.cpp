@@ -102,7 +102,7 @@ private:
 };
 string View::menu()
 {
-    string menu = "\n--Menu--\n1. Create a new robot part\n2. Exit\n";
+    string menu = "\n--Menu--\n1. Create a new robot part\n2. Create a new robot model\n3. View robot models\n4. Exit\n";
     return menu;
 }
 
@@ -119,7 +119,7 @@ private:
 void Controller::cli()
 {
     int cmd=-1;
-    while(cmd!=2){
+    while(cmd!=4){
     cout<<view.menu();
     cout<<"Command? ";
     cin>>cmd;
@@ -191,6 +191,14 @@ void Controller::execute_cmd(int cmd)
             shop.create_new_robot_part(robo_name, model_no, cost, desc, max_power, compartment, max_arms, energy, power_available, choice);
     }
     else if (cmd==2)
+	{
+
+	}
+    else if (cmd==3)
+	{
+
+	}
+    else if (cmd==4)
         cout<<"Thank you and have a great day!!\n";
     else
         cout<<"Invalid!!\n";
