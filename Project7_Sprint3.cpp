@@ -96,6 +96,31 @@ public:
     }
 };
 
+class Customer
+{
+    string name;
+    int customer_number;
+    string email;
+    string phone;
+public:
+    Customer(string Name,int customer_no, string Email, string Phone):name(Name),customer_number(customer_no),email(Email), phone(Phone){}
+
+};
+
+class Order
+{
+
+    int order_number;
+    int day;
+    int month;
+    int choice;
+    int quantity;
+    double total_price;
+public:
+    Order(int ch, int q, int order_no,int d,int m,double cost):choice (ch), quantity(q), order_number(order_no), day(d), month(m), total_price(cost){}
+};
+
+
 
 class Shop
 {
