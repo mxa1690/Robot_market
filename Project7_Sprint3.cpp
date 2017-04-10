@@ -125,6 +125,8 @@ public:
 class Shop
 {
 public:
+    vector <Order*> order;
+    vector <Customer*> customer;
     vector <Robot_models*> store;
     vector <Robot_part*> store_head;
     vector <Robot_part*> store_locomotor;
@@ -132,7 +134,9 @@ public:
     vector <Robot_part*> store_battery;
     vector <Robot_part*> store_arm;
     void create_new_robot_part(string robo_name,int model_no,double price,string description, double max_power,int compartment,int max_arms,double energy,double power_available,int choice);
-    void create_new_robot_model(string model_name,int model_number,Robot_part *head, Robot_part *locomotor, Robot_part *torso, Robot_part *battery, Robot_part *arm);
+    void create_new_robot_model(string model_name,int model_number,Robot_part *head, Robot_part *locomotor, Robot_part *torso, Robot_part *battery, Robot_part *arm, double cost);
+    void create_new_beloved_customer(string name,int cust_no, string email, string phone);
+    void create_new_order(int choice, int quantity, int order_no, int d, int m, double cost);
 };
 void Shop::create_new_robot_part(string robo_name,int model_no,double price, string description, double max_power, int compartment, int max_arms, double energy, double power_available, int choice)
 {
@@ -148,10 +152,22 @@ void Shop::create_new_robot_part(string robo_name,int model_no,double price, str
     else if (choice ==5)
         store_arm.push_back(new Arm{robo_name,model_no,price,description, max_power,"Arm"});
 }
-void Shop::create_new_robot_model(string model_name,int number,Robot_part *head, Robot_part *locomotor, Robot_part *torso, Robot_part *battery, Robot_part *arm)
+void Shop::create_new_robot_model(string model_name,int number,Robot_part *head, Robot_part *locomotor, Robot_part *torso, Robot_part *battery, Robot_part *arm, double cost)
 {
-    store.push_back(new Robot_models{model_name, number, head, torso, locomotor, arm, battery});
+    store.push_back(new Robot_models{model_name, number, head, torso, locomotor, arm, battery, cost});
 }
+void Shop::create_new_beloved_customer(string name,int cust_no, string email, string phone)
+{
+    customer.push_back(new Customer{name,cust_no,email,phone});
+    //ofstream myfile;
+    //myfile.open("chk.txt");
+    //myfile<<(customer[0]->name);
+}
+void Shop::create_new_order(int choice, int quantity, int order_number, int d, int m, double cost)
+{
+    order.push_back(new Order{choice, quantity, order_number, d, m, cost});
+}
+
 
 class View
 {
