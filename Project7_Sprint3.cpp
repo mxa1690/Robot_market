@@ -15,6 +15,7 @@ public:
     string type;
     double cost;
 protected:
+    //double cost;
     string name;
     int model_number;
     string description;
@@ -89,11 +90,7 @@ class SA
     string name;
     int employee_number;
 public:
-    void fillSA(string SA_name, int SA_no)
-    {
-        name=SA_name;
-        employee_number=SA_no;
-    }
+    SA(string Name, int emp_no): name(Name),employee_number(emp_no){}
 };
 
 
@@ -127,6 +124,7 @@ class Shop
 {
 public:
     vector <Order*> order;
+    vector <SA*> sa;
     vector <Customer*> customer;
     vector <Robot_models*> store;
     vector <Robot_part*> store_head;
@@ -138,6 +136,8 @@ public:
     void create_new_robot_model(string model_name,int model_number,Robot_part *head, Robot_part *locomotor, Robot_part *torso, Robot_part *battery, Robot_part *arm, double cost);
     void create_new_beloved_customer(string name,int cust_no, string email, string phone);
     void create_new_order(int choice, int quantity, int order_no, int d, int m, double cost);
+    void create_new_sa(string name, int emp_no);
+
 };
 void Shop::create_new_robot_part(string robo_name,int model_no,double price, string description, double max_power, int compartment, int max_arms, double energy, double power_available, int choice)
 {
@@ -160,13 +160,14 @@ void Shop::create_new_robot_model(string model_name,int number,Robot_part *head,
 void Shop::create_new_beloved_customer(string name,int cust_no, string email, string phone)
 {
     customer.push_back(new Customer{name,cust_no,email,phone});
-    //ofstream myfile;
-    //myfile.open("chk.txt");
-    //myfile<<(customer[0]->name);
 }
 void Shop::create_new_order(int choice, int quantity, int order_number, int d, int m, double cost)
 {
     order.push_back(new Order{choice, quantity, order_number, d, m, cost});
+}
+void Shop::create_new_sa(string name, int emp_no)
+{
+    sa.push_back(new SA {name,emp_no});
 }
 
 
@@ -199,7 +200,7 @@ string View::BC_menu()
 }
 string View::SA_menu()
 {
-    string menu = "\n1. Create an order\n2. Logout\n";
+    string menu = "\n1. Add a new Sales Associate\n2. Create a new order\n3. Logout\n";
     return menu;
 }
 
@@ -244,7 +245,7 @@ void Controller::cli()
         }
         else if (choice == 3)
         {
-            while (cmd!=2)
+            while (cmd!=3)
             {
                 cout<<view.SA_menu();
                 cin>>cmd;
@@ -261,8 +262,8 @@ void Controller::cli()
 }
 void Controller::execute_cmd(int cmd,int ch)
 {
-    string robo_name, desc, model_name, customer_name, customer_email, customer_phone;
-    int model_no, choice, compartment=0, max_arms=2, model_number, head_select, torso_select, locomotor_select, battery_select, arm_select, customer_number, model_choice, order_no, month ,day, quantity;
+    string robo_name, desc, model_name, customer_name, customer_email, customer_phone, sa_name;
+    int model_no, choice, compartment=0, max_arms=2, model_number, head_select, torso_select, locomotor_select, battery_select, arm_select, customer_number, model_choice, order_no, month ,day, quantity, emp_no;
     double cost, energy=0, max_power, power_available, least_model_cost=0, model_cost, order_cost;
     if (ch == 1)
     {
@@ -467,6 +468,14 @@ void Controller::execute_cmd(int cmd,int ch)
     else if(ch==3)
     {
         if (cmd==1)
+        {
+            cin.ignore();
+            cout<<"Enter your name: ";
+            getline(cin,sa_name);
+            cout<<"Enter the employee number: ";
+            cin>>emp_no;
+        }
+        else if (cmd==2)
         {
             month = 0; day=0;
             for ( auto & val: shop.store)
