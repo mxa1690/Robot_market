@@ -22,7 +22,7 @@ public:
     string type;
     double cost;
 protected:
-    //double cost;
+
     string name;
     int model_number;
     string description;
@@ -222,7 +222,7 @@ private:
     View& view;
 };
 
-void Controller::cli()
+/*void Controller::cli()
 {
     int choice = -1;
     while(choice!=4)
@@ -266,7 +266,7 @@ void Controller::cli()
         }
         else cout<<"Wrong option";
 }
-}
+}*/
 void Controller::execute_cmd(int cmd,int ch)
 {
     string robo_name, desc, model_name, customer_name, customer_email, customer_phone, sa_name;
@@ -348,7 +348,6 @@ void Controller::execute_cmd(int cmd,int ch)
                 }
                 cout<<"Option?";
                 cin>>head_select;
-                //cout<<shop.store_head[head_select-1]->cost;
                 least_model_cost+=(shop.store_head[head_select-1])->cost;
             }
             if (!shop.store_locomotor.empty())
@@ -520,11 +519,45 @@ void Controller::execute_cmd(int cmd,int ch)
     }
 }
 
-int main()
-{
-    Shop sp;
+Fl_Window *win;
+Fl_Menu_Bar *menubar;
+const int X = 500;
+const int Y = 400;
+	Shop sp;
     View view(sp);
     Controller controller (sp,view);
-    controller.cli();
-    return 0;
+
+void Close (Fl_Widget* w, void* p) {
+int selection =1;
+selection = fl_choice("Are you sure you want to quit?", fl_no, fl_yes, 0);
+if (selection ==1) {
+win ->hide();
+}
+}
+
+void create_part (Fl_Widget* w, void* p)
+{string which_part = "Which part?\n1. Head\n2. Locomotor\n3. Torso\n4. Battery\n5. Arm\n";
+   int choice = atoi(fl_input(which_part.c_str(), 0));
+controller.execute_cmd(1,1,choice);}
+
+Fl_Menu_Item menuitems[] = {
+    {"&Create new Part", FL_ALT + 'h', (Fl_Callback*)create_part},
+    {"&Quit", FL_ALT + 'h', (Fl_Callback*)Close},
+      { 0 },};
+
+
+int main()
+{
+
+    win = new Fl_Window{X, Y, "Robot Market"};
+    win->color(FL_WHITE);
+    win->resizable(*win);
+    menubar = new Fl_Menu_Bar(0, 0, X, 30);
+    menubar->menu(menuitems);
+    win->end();
+    win->show();
+
+    Shop sp;
+    View view(sp);
+    return (Fl::run());
 }
