@@ -22,7 +22,7 @@ public:
     string type;
     double cost;
 protected:
-
+    //double cost;
     string name;
     int model_number;
     string description;
@@ -97,7 +97,11 @@ class SA
     string name;
     int employee_number;
 public:
-    SA(string Name, int emp_no): name(Name),employee_number(emp_no){}
+    void fillSA(string SA_name, int SA_no)
+    {
+        name=SA_name;
+        employee_number=SA_no;
+    }
 };
 
 
@@ -131,7 +135,6 @@ class Shop
 {
 public:
     vector <Order*> order;
-    vector <SA*> sa;
     vector <Customer*> customer;
     vector <Robot_models*> store;
     vector <Robot_part*> store_head;
@@ -143,8 +146,6 @@ public:
     void create_new_robot_model(string model_name,int model_number,Robot_part *head, Robot_part *locomotor, Robot_part *torso, Robot_part *battery, Robot_part *arm, double cost);
     void create_new_beloved_customer(string name,int cust_no, string email, string phone);
     void create_new_order(int choice, int quantity, int order_no, int d, int m, double cost);
-    void create_new_sa(string name, int emp_no);
-
 };
 void Shop::create_new_robot_part(string robo_name,int model_no,double price, string description, double max_power, int compartment, int max_arms, double energy, double power_available, int choice)
 {
@@ -171,10 +172,6 @@ void Shop::create_new_beloved_customer(string name,int cust_no, string email, st
 void Shop::create_new_order(int choice, int quantity, int order_number, int d, int m, double cost)
 {
     order.push_back(new Order{choice, quantity, order_number, d, m, cost});
-}
-void Shop::create_new_sa(string name, int emp_no)
-{
-    sa.push_back(new SA {name,emp_no});
 }
 
 
@@ -207,7 +204,7 @@ string View::BC_menu()
 }
 string View::SA_menu()
 {
-    string menu = "\n1. Add a new Sales Associate\n2. Create a new order\n3. Logout\n";
+    string menu = "\n1. Create an order\n2. Logout\n";
     return menu;
 }
 
@@ -216,11 +213,37 @@ class Controller
 public:
     Controller (Shop& sp, View& view):shop (sp), view (view) {}
     void cli();
-    void execute_cmd(int cmd, int choice);
+    void execute_cmd(int cmd, int choice, int ch);
 private:
     Shop& shop;
     View& view;
+ 	int get_int(string title, string prompt, int max_int);
+    string get_string(string title, string prompt);
 };
+
+int Controller::get_int(string title, string prompt, int max_int) {
+
+
+  string error = "Please enter an integer between 0 and " + max_int;
+  int result;
+  while(true) {
+    fl_message_title(title.c_str());
+    fl_message_icon()->label("I");
+    result = atoi(fl_input(prompt.c_str(), 0));
+    if (0 <= result && result <= max_int) break;
+    fl_message_title("Invalid input");
+    fl_message_icon()->label("!");
+    fl_message(error.c_str());
+  }
+  return result;
+}
+
+string Controller::get_string(string title, string prompt) {
+  fl_message_title(title.c_str());
+  fl_message_icon()->label("S");
+  string result{fl_input(prompt.c_str(), 0)};
+  return result;
+}
 
 /*void Controller::cli()
 {
@@ -252,7 +275,7 @@ private:
         }
         else if (choice == 3)
         {
-            while (cmd!=3)
+            while (cmd!=2)
             {
                 cout<<view.SA_menu();
                 cin>>cmd;
@@ -267,17 +290,27 @@ private:
         else cout<<"Wrong option";
 }
 }*/
-void Controller::execute_cmd(int cmd,int ch)
+void Controller::execute_cmd(int cmd,int ch, int choice)
 {
-    string robo_name, desc, model_name, customer_name, customer_email, customer_phone, sa_name;
-    int model_no, choice, compartment=0, max_arms=2, model_number, head_select, torso_select, locomotor_select, battery_select, arm_select, customer_number, model_choice, order_no, month ,day, quantity, emp_no;
+    string robo_name, desc, model_name, customer_name, customer_email, customer_phone;
+    int model_no, compartment=0, max_arms=2, model_number, head_select, torso_select, locomotor_select, battery_select, arm_select, customer_number, model_choice, order_no, month ,day, quantity;
     double cost, energy=0, max_power, power_available, least_model_cost=0, model_cost, order_cost;
     if (ch == 1)
     {
         if (cmd==1)
         {
 
-                bool ans_part;
+		robo_name = get_string("Publication Title", "Part name? ");
+
+		model_no = get_int(robo_name, "Part number?",10000);
+
+    		cost = get_int(robo_name, "Cost?",10000);
+
+
+    		desc = get_string(robo_name, "Description? ");
+		
+
+                /*bool ans_part;
                 do{
                     cout<<"Which part?\n1. Head\n2. Locomotor\n3. Torso\n4. Battery\n5. Arm\n";
                     ans_part=true;
@@ -298,35 +331,31 @@ void Controller::execute_cmd(int cmd,int ch)
                 cin>>cost;
                 cout<<"Enter the description - ";
                 cin.ignore();
-                getline(std::cin,desc);
+                getline(std::cin,desc);*/
                 if ((choice==2)||(choice==5)||(choice==1))
                 {
-                    cout<<"Maximum power - ";
-                    cin>>max_power;
+ 	    		max_power = get_int(robo_name, "Maximum Power?",10000);
                 }
                 else if (choice==3)
                 {
                     bool ans_compartment;
                     do{
                         ans_compartment=true;
-                            cout<<"Enter the number of battery compartments (between 1 and 3) - ";
-                            cin>>compartment;
+                            compartment = get_int(robo_name, "Number of compartments?",4);
                         if ((compartment<1)||(compartment>3))
                         {
-                            cout<<"Error:Compartments should be between 1 and 3\n";
+			    string error = "The number of compartments should be between 1 & 3!";
+                            fl_message(error.c_str());
                             ans_compartment = false;
                         }
 
                     }while(ans_compartment!=true);
-                  cout<<"Enter the max arms - ";
-                  cin>>max_arms;
+                  max_arms = get_int(robo_name, "Maximum number of arms?",3);
                 }
                 else if (choice==4)
                 {
-                    cout<<"Energy the battery contains (in kW h) - ";
-                    cin>>energy;
-                    cout<<"Power available";
-                    cin>>power_available;
+                    energy = get_int(robo_name, "Energy the battery contains?",10000);
+                    power_available = get_int(robo_name, "Power available",10000);
                 }
                 shop.create_new_robot_part(robo_name, model_no, cost, desc, max_power, compartment, max_arms, energy, power_available, choice);
         }
@@ -452,6 +481,8 @@ void Controller::execute_cmd(int cmd,int ch)
             customer_number++;
             cout<<"Your customer number is: "<<customer_number;
             shop.create_new_beloved_customer(customer_name,customer_number,customer_email,customer_phone);
+            //Order order;
+            //order.sales.create_new_order(customer_name,customer_number,customer_email,customer_phone);
         }
         if (cmd==2)
         {
@@ -472,14 +503,6 @@ void Controller::execute_cmd(int cmd,int ch)
     else if(ch==3)
     {
         if (cmd==1)
-        {
-            cin.ignore();
-            cout<<"Enter your name: ";
-            getline(cin,sa_name);
-            cout<<"Enter the employee number: ";
-            cin>>emp_no;
-        }
-        else if (cmd==2)
         {
             month = 0; day=0;
             for ( auto & val: shop.store)
@@ -519,7 +542,10 @@ void Controller::execute_cmd(int cmd,int ch)
     }
 }
 
+
 Fl_Window *win;
+//Fl_Box *box;
+//Fl_Box *box1;
 Fl_Menu_Bar *menubar;
 const int X = 500;
 const int Y = 400;
@@ -552,6 +578,7 @@ int main()
     win = new Fl_Window{X, Y, "Robot Market"};
     win->color(FL_WHITE);
     win->resizable(*win);
+    //box = new Fl_Box{0,0,X,Y,l.c_str()};
     menubar = new Fl_Menu_Bar(0, 0, X, 30);
     menubar->menu(menuitems);
     win->end();
@@ -559,5 +586,7 @@ int main()
 
     Shop sp;
     View view(sp);
+    //Controller controller (sp,view);
+    //controller.cli();
     return (Fl::run());
 }
