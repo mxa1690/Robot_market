@@ -562,9 +562,19 @@ win ->hide();
 }
 
 void create_part (Fl_Widget* w, void* p)
-{string which_part = "Which part?\n1. Head\n2. Locomotor\n3. Torso\n4. Battery\n5. Arm\n";
-   int choice = atoi(fl_input(which_part.c_str(), 0));
-controller.execute_cmd(1,1,choice);}
+{
+int choice;
+bool valid = false;
+string error = "Read the menu carefully, please!\nLet's try again :)";
+do{
+	string which_part = "Which part?\n1. Head\n2. Locomotor\n3. Torso\n4. Battery\n5. Arm\n";
+   	choice = atoi(fl_input(which_part.c_str(), 0));
+	if (choice>=1 && choice<=5)
+		valid = true;
+	else fl_message(error.c_str());
+}while (valid!=true);
+	controller.execute_cmd(1,1,choice);
+}
 
 Fl_Menu_Item menuitems[] = {
     {"&Create new Part", FL_ALT + 'h', (Fl_Callback*)create_part},
