@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Box.H>
@@ -22,7 +23,6 @@ public:
     string type;
     double cost;
 protected:
-    //double cost;
     string name;
     int model_number;
     string description;
@@ -226,7 +226,7 @@ private:
 int Controller::get_int(string title, string prompt, int max_int) {
 
 
-  string error = "Please enter an integer between 0 and " + max_int;
+  string error = "   Please enter an integer between 0 and " + to_string(max_int);
   int result;
   while(true) {
     fl_message_title(title.c_str());
@@ -247,51 +247,6 @@ string Controller::get_string(string title, string prompt) {
   return result;
 }
 
-/*void Controller::cli()
-{
-    int choice = -1;
-    while(choice!=4)
-    {   int cmd=-1, choice=-1;
-        cout<<view.menu();
-        cout<<"Command? ";
-        cin>>choice;
-        if (choice==1)
-        {
-            while (cmd!=4)
-            {
-                cout<<view.PD_menu();
-                cin>>cmd;
-                execute_cmd(cmd,choice);
-            }
-
-        }
-        else if(choice == 2)
-        {
-            while (cmd!=3)
-            {
-                cout<<view.BC_menu();
-                cin>>cmd;
-                execute_cmd(cmd,choice);
-            }
-
-        }
-        else if (choice == 3)
-        {
-            while (cmd!=2)
-            {
-                cout<<view.SA_menu();
-                cin>>cmd;
-                execute_cmd(cmd,choice);
-            }
-
-        }
-        else if (choice == 4)
-        {
-            exit(0);
-        }
-        else cout<<"Wrong option";
-}
-}*/
 void Controller::execute_cmd(int cmd,int ch, int choice)
 {
     string robo_name, desc, model_name, customer_name, customer_email, customer_phone;
@@ -312,28 +267,6 @@ void Controller::execute_cmd(int cmd,int ch, int choice)
     		desc = get_string(robo_name, "Description? ");
 		
 
-                /*bool ans_part;
-                do{
-                    cout<<"Which part?\n1. Head\n2. Locomotor\n3. Torso\n4. Battery\n5. Arm\n";
-                    ans_part=true;
-                    cin>>choice;
-                    if ((choice<1)||(choice>5))
-                        {
-                            cout<<"Error:Options are from 1 to 5!\n";
-                            ans_part = false;
-                        }
-                } while (ans_part!=true);
-
-                cout<<"Enter the part name - ";
-                cin.ignore();
-                getline(std::cin,robo_name);
-                cout<<"Enter the model number - ";
-                cin>>model_no;
-                cout<<"Enter the cost - ";
-                cin>>cost;
-                cout<<"Enter the description - ";
-                cin.ignore();
-                getline(std::cin,desc);*/
                 if ((choice==2)||(choice==5)||(choice==1))
                 {
  	    		max_power = get_int(robo_name, "Maximum Power?",10000);
@@ -343,7 +276,7 @@ void Controller::execute_cmd(int cmd,int ch, int choice)
                     bool ans_compartment;
                     do{
                         ans_compartment=true;
-                            compartment = get_int(robo_name, "Number of compartments?",4);
+                            compartment = get_int(robo_name, "Number of compartments?",3);
                         if ((compartment<1)||(compartment>3))
                         {
 			    string error = "The number of compartments should be between 1 & 3!";
@@ -363,83 +296,85 @@ void Controller::execute_cmd(int cmd,int ch, int choice)
         }
         else if (cmd==2)
         {
-            cin.ignore();
-            cout<<"Enter the model name: ";
-            getline(cin,model_name);
-            cout<<"Enter model number: ";
-            cin>>model_number;
+	    std::stringstream s_heads,s_locomotor,s_torso,s_batteries, s_arms;
+if ((!shop.store_head.empty())||(!shop.store_locomotor.empty())||(!shop.store_torso.empty())||(!shop.store_battery.empty())||(!shop.store_arm.empty()))
+{
+            model_name = get_string("New Robot model", "Model name? ");
+            model_number = get_int(model_name, "Model number?",10000);
             if (!shop.store_head.empty())
             {
-               cout<<"\nAvailable robot heads are: ";
                 for ( auto & val: shop.store_head)
                 {
                     int i=1;
-                    print_parts(*val,i);
+                    string st = print_parts(*val,i);
+			s_heads<<st;
                     i++;
                 }
-                cout<<"Option?";
-                cin>>head_select;
+		string options = s_heads.str();
+                head_select = get_int("Available robot heads", options,10000);
                 least_model_cost+=(shop.store_head[head_select-1])->cost;
             }
             if (!shop.store_locomotor.empty())
             {
-                cout<<"\nAvailable robot locomotors are: ";
                 for ( auto & val: shop.store_locomotor)
                 {
-                     int i=1;
-                    print_parts(*val,i);
+                    int i=1;
+                    string st = print_parts(*val,i);
+			s_locomotor<<st;
                     i++;
                 }
-                cout<<"Option?";
-                cin>>locomotor_select;
+		string options = s_locomotor.str();
+                locomotor_select = get_int("Available robot Locomotors", options,10000);
                 least_model_cost+=(shop.store_locomotor[locomotor_select-1])->cost;
 
             }
             if (!shop.store_torso.empty())
             {
-                cout<<"\nAvailable robot torsos are: ";
                 for ( auto & val: shop.store_torso)
                 {
-                     int i=1;
-                    print_parts(*val,i);
-                    ++i;
+                    int i=1;
+                    string st = print_parts(*val,i);
+			s_torso<<st;
+                    i++;
                 }
-                cout<<"Option?";
-                cin>>torso_select;
+		string options = s_torso.str();
+                torso_select = get_int("Available robot Torso", options,10000);
                 least_model_cost+=(shop.store_torso[torso_select-1])->cost;
 
             }
             if (!shop.store_battery.empty())
             {
-                cout<<"\nAvailable robot batteries are: ";
                 for ( auto & val: shop.store_battery)
                 {
-                     int i=1;
-                    print_parts(*val,i);
+                    int i=1;
+                    string st = print_parts(*val,i);
+			s_batteries<<st;
                     i++;
                 }
-                cout<<"Option?";
-                cin>>battery_select;
+		string options = s_batteries.str();
+                battery_select = get_int("Available robot Battery", options,10000);
                 least_model_cost+=(shop.store_battery[battery_select-1])->cost;
+
 
             }
             if (!shop.store_arm.empty())
             {
-                cout<<"\nAvailable robot arms are: ";
                 for ( auto & val: shop.store_arm)
                 {
-                     int i=1;
-                    print_parts(*val,i);
+                    int i=1;
+                    string st = print_parts(*val,i);
+			s_arms<<st;
                     i++;
                 }
-                cout<<"Option?";
-                cin>>arm_select;
+		string options = s_arms.str();
+                arm_select = get_int("Available robot Arms", options,10000);
                 least_model_cost+=(shop.store_arm[arm_select-1])->cost;
 
+
             }
-            cout<<"The cost of all the parts to make this particular robot model is: $"<<least_model_cost;
-            cout<<"\nEnter the cost of the robot (considering profit)\n$ ";
-            cin>>model_cost;
+		string least_mc = to_string(least_model_cost);
+		string prompt = "The cost of all the parts to make this particular robot model is: $"+least_mc;
+            model_cost = get_int(model_name, prompt+"\nEnter the cost of the robot (considering profit)?",10000);
             Robot_part *h=0, *l=0,*t=0, *b=0, *a=0;
             if (!shop.store_head.empty()){
                 h =(shop.store_head[head_select-1]);}
@@ -452,6 +387,8 @@ void Controller::execute_cmd(int cmd,int ch, int choice)
             if (!shop.store_arm.empty())
                 a =(shop.store_arm[arm_select-1]);
             shop.create_new_robot_model(model_name,model_number,h,l,t,b,a,model_cost);
+}
+else fl_message("No robot parts available to make a new robot! Consider creating new robot parts");
         }
         else if (cmd==3)
         {
@@ -483,8 +420,7 @@ void Controller::execute_cmd(int cmd,int ch, int choice)
             customer_number++;
             cout<<"Your customer number is: "<<customer_number;
             shop.create_new_beloved_customer(customer_name,customer_number,customer_email,customer_phone);
-            //Order order;
-            //order.sales.create_new_order(customer_name,customer_number,customer_email,customer_phone);
+
         }
         if (cmd==2)
         {
@@ -546,8 +482,6 @@ void Controller::execute_cmd(int cmd,int ch, int choice)
 
 
 Fl_Window *win;
-//Fl_Box *box;
-//Fl_Box *box1;
 Fl_Menu_Bar *menubar;
 const int X = 500;
 const int Y = 400;
@@ -566,13 +500,13 @@ win ->hide();
 void create_part (Fl_Widget* w, void* p)
 {
 int choice;
-bool valid = false;
+bool valid;
 string error = "Read the menu carefully, please!\nLet's try again :)";
 do{
 	string which_part = "Which part?\n1. Head\n2. Locomotor\n3. Torso\n4. Battery\n5. Arm\n";
    	choice = atoi(fl_input(which_part.c_str(), 0));
 	if (choice>=1 && choice<=5)
-		valid = true;
+		 valid = true;
 	else fl_message(error.c_str());
 }while (valid!=true);
 	controller.execute_cmd(1,1,choice);
@@ -581,11 +515,13 @@ do{
 void create_model (Fl_Widget* w, void* p)
 {controller.execute_cmd(2,1,0);}
 
+
 Fl_Menu_Item menuitems[] = {
     {"&Create new Part", FL_ALT + 'p', (Fl_Callback*)create_part},
     {"&Create new Model", FL_ALT + 'm', (Fl_Callback*)create_model},
     {"&Quit", FL_ALT + 'q', (Fl_Callback*)Close},
       { 0 },};
+
 
 int main()
 {
@@ -593,7 +529,6 @@ int main()
     win = new Fl_Window{X, Y, "Robot Market"};
     win->color(FL_WHITE);
     win->resizable(*win);
-    //box = new Fl_Box{0,0,X,Y,l.c_str()};
     menubar = new Fl_Menu_Bar(0, 0, X, 30);
     menubar->menu(menuitems);
     win->end();
@@ -601,7 +536,5 @@ int main()
 
     Shop sp;
     View view(sp);
-    //Controller controller (sp,view);
-    //controller.cli();
     return (Fl::run());
 }
