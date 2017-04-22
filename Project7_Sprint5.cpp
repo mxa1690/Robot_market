@@ -18,7 +18,7 @@ class Robot_part
 public:
     Robot_part(){};
     Robot_part(string robot_name,int robot_modelno, double price, string desc, string what_part):name(robot_name),model_number(robot_modelno),cost(price),description(desc), type(what_part){}
-    friend void print_parts (Robot_part, int i);
+    friend string print_parts (Robot_part, int i);
     string type;
     double cost;
 protected:
@@ -27,12 +27,14 @@ protected:
     int model_number;
     string description;
 };
-void print_parts(Robot_part robot, int i)
+string print_parts(Robot_part robot, int i)
 {
-    cout<<"\n"<<i<<". "<<robot.name<<"\t";
-    cout<<robot.model_number<<"\t";
-    cout<<robot.description<<"\t";
-    cout<<robot.cost<<"\n";
+    std::stringstream ss1,ss2;
+    string table = "\n	Name\tDescription\tmodel no\tcost\n";
+    ss1 <<table<<i<<".	 "<< robot.name << "	  	  "<< robot.description<<"			  ";
+    ss2 <<robot.model_number<<"	    	      "<<robot.cost;
+    string s = ss1.str() + ss2.str();
+    return s;
 }
 class Robot_models
 {
