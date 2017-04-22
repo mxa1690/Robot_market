@@ -257,7 +257,7 @@ void Controller::execute_cmd(int cmd,int ch, int choice)
         if (cmd==1)
         {
 
-		robo_name = get_string("Publication Title", "Part name? ");
+		robo_name = get_string("Create new robot part", "Part name? ");
 
 		model_no = get_int(robo_name, "Part number?",10000);
 
