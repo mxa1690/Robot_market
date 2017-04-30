@@ -262,7 +262,7 @@ void Controller::execute_cmd(int cmd,int ch, int choice)
         if (cmd==1)
         {
 
-		robo_name = get_string("Create new robot part", "Part name? ");
+		robo_name = get_string("Publication Title", "Part name? ");
 
 		model_no = get_int(robo_name, "Part number?",10000);
 
@@ -396,14 +396,22 @@ if ((!shop.store_head.empty())||(!shop.store_locomotor.empty())||(!shop.store_to
 else fl_message("No robot parts available to make a new robot! Consider creating new robot parts");
         }
         else if (cmd==3)
-        {
-            cout<<"Available robot models are\n";
-            for ( auto & val: shop.store)
-            {
-                int i=1;
-                print_models(*val,i);
-                i++;
-            }
+        { std::stringstream s_models;
+	  if (!shop.store.empty())
+	{
+ 	    for ( auto & val: shop.store)
+                {
+                    int i=1;
+                    string st = print_models(*val,i);
+			s_models<<st;
+                    i++;
+                }
+		string mod = s_models.str();
+                fl_message(mod.c_str());
+
+	}
+	else fl_message("No robot models in stock, consider creating a new robot model");
+
         }
         else if (cmd==4)
             cout<<"Thank you and have a great day!!\n";
