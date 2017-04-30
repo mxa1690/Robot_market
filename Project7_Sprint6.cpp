@@ -515,6 +515,9 @@ do{
 void create_model (Fl_Widget* w, void* p)
 {controller.execute_cmd(2,1,0);}
 
+void view_model (Fl_Widget* w, void* p)
+{controller.execute_cmd(3,1,0);}
+
 
 Fl_Menu_Item menuitems[] = {
     {"&Create new Part", FL_ALT + 'p', (Fl_Callback*)create_part},
