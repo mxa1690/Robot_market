@@ -47,14 +47,19 @@ class Robot_models
     Robot_part *battery;
 public:
     Robot_models (string Name, int modelN, Robot_part *Hd, Robot_part *T, Robot_part *l, Robot_part *a, Robot_part *bat, double m_cost):name(Name),model_number(modelN), head(Hd), torso(T), locomotor(l), arm(a), battery(bat), cost(m_cost){}
-    friend void print_models(Robot_models model, int i);
+    friend string print_models(Robot_models model, int i);
     double cost;
     double max_speed();
     double max_battery_life();
 };
-void print_models(Robot_models model, int i)
+string print_models(Robot_models model, int i)
 {
-    cout<<"\n"<<i<<". Name: "<<model.name<<"\tModel number: "<<model.model_number<<"\tCost: $"<<model.cost;
+    std::stringstream ss1,ss2;
+    string table = "\n	Name\tmodel no\tcost\n";
+    ss1 <<table<<i<<".	 "<< model.name << "	  	  "<< model.model_number<<"			  "<<model.cost;
+
+    string s = ss1.str();
+    return s;
 }
 
 class Head:public Robot_part
